@@ -1,109 +1,150 @@
-# FullstackApp
+# Fullstack Monorepo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A modern fullstack monorepo built with Nx, featuring TanStack Start for the frontend and NestJS with Drizzle ORM for the backend.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Tech Stack
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+### Frontend (`apps/frontend`)
+- **Framework**: TanStack Start (React-based SSR framework)
+- **Routing**: TanStack Router
+- **State Management**: TanStack Query
+- **Build Tool**: Vite
+- **Styling**: CSS
 
-## Generate a library
+### Backend (`apps/backend`)
+- **Framework**: NestJS
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Language**: TypeScript
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+### DevOps
+- **Monorepo**: Nx
+- **Package Manager**: pnpm
+- **Containerization**: Docker & Docker Compose
+- **Code Quality**: ESLint & Prettier
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+
+- pnpm
+- Docker & Docker Compose
+
+### 1. Clone and Install Dependencies
+```bash
+git clone <repository-url>
+cd fullstack-app
+pnpm install
 ```
 
-## Run tasks
+### 2. Start PostgreSQL Database
+```bash
+# Using Docker (recommended)
+docker-compose up -d postgres
 
-To build the library use:
-
-```sh
-npx nx build pkg1
+# Or use your local PostgreSQL instance
+# Create database named 'fullstackdb'
 ```
 
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
+### 3. Environment Setup
+```bash
+cp .env.example .env
+# Update .env with your database configuration
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
+### 4. Database Setup
+```bash
+cd apps/backend
+pnpm run db:generate  # Generate migration files
+pnpm run db:migrate   # Run migrations
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+### 5. Start Development Servers
+```bash
+# Start both frontend and backend
+pnpm run dev
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+# Or start individually
+pnpm run dev:frontend  # Frontend on http://localhost:4200
+pnpm run dev:backend   # Backend on http://localhost:3000
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+## Available Scripts
 
-```sh
-npx nx sync:check
+### Root Level Scripts
+- `pnpm run dev` - Start  both frontend and backend in development mode
+- `pnpm run build` - Build both applications
+- `pnpm run docker:up` - Start all services with Docker Compose
+- `pnpm run docker:down` - Stop all Docker services
+- `pnpm run setup` - Install dependencies and start PostgreSQL
+
+### Frontend Scripts (`apps/frontend`)
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run start` - Start production server
+
+### Backend Scripts (`apps/backend`)
+- `pnpm run dev` - Start development server with hot reload
+- `pnpm run build` - Build application
+- `pnpm run start` - Start production server
+- `pnpm run db:generate` - Generate database migrations
+- `pnpm run db:migrate` - Run database migrations
+- `pnpm run db:studio` - Open Drizzle Studio for database management
+
+## API Endpoints
+
+### Users API
+- `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get user by ID
+- `POST /api/users` - Create new user
+- `PATCH /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user
+
+### Health Check
+- `GET /api/health` - Application health status
+
+## Project Structure
+
+```
+fullstack-app/
+├── apps/
+│   ├── frontend/          # TanStack Start application
+│   └── backend/           # NestJS application
+├── docker-compose.yml     # Docker configuration
+├── pnpm-workspace.yaml    # pnpm workspace configuration
+├── nx.json               # Nx configuration
+└── package.json          # Root package configuration
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## Development
 
-## Set up CI!
+### Adding New Packages
+```bash
+# Add to specific app
+pnpm add <package> --filter=@fullstack-app/frontend
+pnpm add <package> --filter=@fullstack-app/backend
 
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+# Add to workspace root
+pnpm add <package> -w
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+### Database Changes
+1. Modify `apps/backend/src/schema.ts`
+2. Generate migration: `pnpm run db:generate`
+3. Apply migration: `pnpm run db:migrate`
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Deployment
 
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+### Docker Deployment
+```bash
+docker-compose up -d
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+This will start:
+- PostgreSQL on port 5432
+- Backend API on port 3000
+- Frontend on port 4200
 
-## Install Nx Console
+## License
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT

@@ -2,17 +2,48 @@
   "name": "@fullstack-app/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @fullstack-app/backend run dev\" \"pnpm --filter @fullstack-app/frontend run dev\"",
+    "dev:frontend": "pnpm --filter @fullstack-app/frontend run dev",
+    "dev:backend": "pnpm --filter @fullstack-app/backend run dev",
+    "build": "pnpm -w --filter @fullstack-app/frontend run build && pnpm -w --filter @fullstack-app/backend run build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "pnpm install && docker-compose up -d postgres"
+  },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nx/eslint": "^21.6.5",
     "@nx/js": "21.6.5",
+    "@nx/nest": "^21.6.5",
+    "@nx/node": "^21.6.5",
+    "@nx/react": "^21.6.5",
+    "@nx/vite": "^21.6.5",
+    "@nx/web": "21.6.5",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@types/node": "^20.0.0",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/ui": "^3.0.0",
+    "concurrently": "^9.2.1",
+    "jiti": "2.4.2",
+    "jsdom": "~22.1.0",
     "nx": "21.6.5",
     "prettier": "^2.6.2",
     "tslib": "^2.3.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vite": "^7.0.0",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-router-dom": "6.29.0"
   }
 }
